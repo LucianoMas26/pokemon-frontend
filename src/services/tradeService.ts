@@ -56,7 +56,7 @@ export const offerTrade = async (
       }
     )
 
-    return response.data as Trade // Asegúrate de devolver un Trade correctamente
+    return response.data as Trade
   } catch (error: any) {
     throw new Error(`Error ofreciendo el trade: ${error}`)
   }

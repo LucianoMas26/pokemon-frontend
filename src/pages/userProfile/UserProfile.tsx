@@ -80,7 +80,6 @@ const UserProfile: React.FC = () => {
   const handleDeletePokemon = async (pokemonId: number) => {
     if (!authToken) return
 
-    // Mostrar confirmación con SweetAlert
     const confirmDelete = await Swal.fire({
       title: "¿Estás seguro?",
       text: "¡No podrás revertir esto!",
