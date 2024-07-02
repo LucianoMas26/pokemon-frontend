@@ -16,6 +16,32 @@ export interface Pokemon {
   }
 }
 
+export const createNewPokemon = async (pokemonData: any, authToken: string) => {
+  const response = await axios.post(
+    `${API_BASE_URL}/pokemons/new/create`,
+    pokemonData,
+    {
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    }
+  )
+  return response.data
+}
+
+export const addRandomPokemon = async (userId: number, authToken: string) => {
+  const response = await axios.post(
+    `${API_BASE_URL}/pokemons/${userId}/pokemons/random`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    }
+  )
+  return response.data
+}
+
 export const getOfferedPokemons = async (): Promise<Pokemon[]> => {
   try {
     const response = await axios.get(

@@ -5,12 +5,17 @@ import { offerPokemonForTrade } from "../../services/pokemonService"
 import { showAlert } from "../../services/alertService"
 import {
   removeOfferForTrade,
-  deletePokemon
+  deletePokemon,
+  addRandomPokemon
 } from "../../services/pokemonService"
 import Swal from "sweetalert2"
+import { useState } from "react"
+import PokemonForm from "../../components/pokemonForm/PokemonForm"
 
 const UserProfile: React.FC = () => {
   const { user, authToken, loadUserProfile } = useAuth()
+
+  const [isCreatingPokemon, setIsCreatingPokemon] = useState(false)
 
   if (!user) {
     return (
@@ -106,8 +111,37 @@ const UserProfile: React.FC = () => {
     }
   }
 
+  const handleAddRandomPokemon = async () => {
+    if (!authToken) return
+
+    try {
+      const newPokemon = await addRandomPokemon(user.id, authToken)
+      showAlert(
+        "success",
+        `¡Felicidades tu nuevo pokémon es ${newPokemon.name}!`
+      )
+      loadUserProfile(authToken)
+    } catch (error) {
+      console.error("Error adding random pokemon:", error)
+      showAlert(
+        "error",
+        "Hubo un problema al añadir el Pokémon aleatorio. Por favor, intenta de nuevo más tarde."
+      )
+    }
+  }
+
+  const openCreatePokemonModal = () => {
+    setIsCreatingPokemon(true)
+  }
+
+  const closeCreatePokemonModal = () => {
+    setIsCreatingPokemon(false)
+  }
+
+  console.log(user)
+
   return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div className="max-w-4xl mx-auto p-4 relative">
       <h1 className="text-3xl font-bold mb-4">Perfil del Usuario</h1>
       <div className="bg-white shadow-md rounded-lg p-6 mb-6">
         <p>
@@ -117,6 +151,28 @@ const UserProfile: React.FC = () => {
           <strong>Email:</strong> {user.email}
         </p>
       </div>
+
+      <div></div>
+
+      <div className="fixed bottom-4 right-4 flex space-x-4">
+        <button
+          onClick={handleAddRandomPokemon}
+          className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-700"
+        >
+          Añadir Pokémon Aleatorio
+        </button>
+        <button
+          onClick={openCreatePokemonModal}
+          className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
+        >
+          Crear Pokémon
+        </button>
+      </div>
+
+      <PokemonForm
+        isOpen={isCreatingPokemon}
+        onClose={closeCreatePokemonModal}
+      />
 
       <h2 className="text-2xl font-semibold mb-4">Pokémons</h2>
       {user.pokemons.length === 0 ? (
